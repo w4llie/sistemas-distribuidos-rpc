@@ -1,4 +1,3 @@
-# common/rpc_utils.py
 import pika
 import os
 

@@ -1,4 +1,3 @@
-# client/rpc_client.py
 import uuid
 import json
 import threading
@@ -10,10 +9,8 @@ class RpcClient:
         self.connection = get_connection()
         self.channel = self.connection.channel()
 
-        # Queue where coordinator listens
         self.coordinator_queue = 'rpc_coordinator'
 
-        # Exclusive callback queue for this client
         result = self.channel.queue_declare(queue='', exclusive=True)
         self.callback_queue = result.method.queue
 
@@ -25,7 +22,6 @@ class RpcClient:
             on_message_callback=self.on_response,
             auto_ack=True)
 
-        # run consuming in a separate thread so we can block-wait on response
         self.consume_thread = threading.Thread(target=self._start_consuming, daemon=True)
         self.consume_thread.start()
 
@@ -40,10 +36,6 @@ class RpcClient:
             self.response = body
 
     def call(self, service_name: str, payload: dict, timeout: float = 10.0):
-        """
-        Sends a request to the coordinator indicating which service to call.
-        Waits (busy loop) until response with same correlation id arrives.
-        """
         self.response = None
         self.corr_id = str(uuid.uuid4())
         message = {
@@ -62,7 +54,6 @@ class RpcClient:
             body=json.dumps(message)
         )
 
-        # wait for response
         import time
         waited = 0.0
         interval = 0.05

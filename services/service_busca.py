@@ -1,4 +1,3 @@
-# services/service_busca.py
 import pika
 import json
 import time

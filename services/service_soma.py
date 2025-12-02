@@ -1,4 +1,3 @@
-# services/service_soma.py
 import json
 import time
 import pika
@@ -6,14 +5,11 @@ from common.rpc_utils import get_connection
 
 QUEUE = 'service_soma'
 
-
 def process(payload):
     a = payload.get("a", 0)
     b = payload.get("b", 0)
-    # simula trabalho
     time.sleep(1)
     return {"result": a + b}
-
 
 def main():
     conn = get_connection()
@@ -33,7 +29,6 @@ def main():
         result = process(payload)
         response_body = json.dumps(result)
 
-        # responder para o reply_to (coordinator_responses)
         reply_to = props.reply_to
         if reply_to is None:
             print(f"[service_soma] Nenhum reply_to fornecido, não posso responder corr_id={client_corr_id}")
@@ -53,7 +48,6 @@ def main():
     ch.basic_consume(queue=QUEUE, on_message_callback=on_request, auto_ack=True)
     print(f"[service_soma] Aguardando mensagens na fila '{QUEUE}'...")
     ch.start_consuming()
-
 
 if __name__ == "__main__":
     main()

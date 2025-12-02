@@ -1,4 +1,3 @@
-# services/service_media.py
 import json
 import time
 from common.rpc_utils import get_connection
@@ -10,7 +9,6 @@ def process(payload):
     nums = payload.get("numbers", [])
     if not nums:
         return {"error": "no numbers provided"}
-    # simula trabalho
     time.sleep(2)
     avg = sum(nums) / len(nums)
     return {"result": avg, "count": len(nums)}
