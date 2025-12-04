@@ -47,16 +47,21 @@ sistemas-distribuidos-rpc/
 ### 1. Iniciar os Serviços
 
 Cada serviço deve ser executado em um terminal separado. Certifique-se de que o RabbitMQ esteja em execução.
+
 Terminal 1: Serviço de Soma
+
 ``` python -m services.service_soma ```
 
 Terminal 2: Serviço de Média
+
 ``` python -m services.service_media ```
 
 Terminal 3: Serviço de Busca
+
 ``` python -m services.service_busca ```
 
 Terminal 4: Serviço de Conversão de Temperatura
+
 ``` python -m services.service_conversao ```
 
 ### 2. Executar o Cliente
@@ -71,11 +76,13 @@ O cliente irá listar os serviços disponíveis: "soma", "media", "busca" e "con
 
 Ao executar o cliente, escolha "conversao":
 
+```
 Escolha o serviço: soma, media, busca, conversao
 Serviço: conversao
 Temperatura em Celsius: 0
 Chamando serviço 'conversao' com payload: {'celsius': 0.0}
 Resultado: {'resultado em fahrenheit': 32.0}
+```
 
 ## Fluxo
 
