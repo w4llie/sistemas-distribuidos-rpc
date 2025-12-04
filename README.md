@@ -20,7 +20,7 @@ Para executar este projeto, você precisará ter instalado:
 
 Instale a biblioteca "pika" para comunicação com o RabbitMQ, no terminal, através do comando:
 
-pip install -r requeriments.txt
+``` pip install -r requeriments.txt ```
 
 ## Estrutura do Projeto
 
@@ -48,22 +48,22 @@ sistemas-distribuidos-rpc/
 
 Cada serviço deve ser executado em um terminal separado. Certifique-se de que o RabbitMQ esteja em execução.
 Terminal 1: Serviço de Soma
-python -m services.service_soma
+``` python -m services.service_soma ```
 
 Terminal 2: Serviço de Média
-python -m services.service_media
+``` python -m services.service_media ```
 
 Terminal 3: Serviço de Busca
-python -m services.service_busca
+``` python -m services.service_busca ```
 
 Terminal 4: Serviço de Conversão de Temperatura
-python -m services.service_conversao
+``` python -m services.service_conversao ```
 
 ### 2. Executar o Cliente
 
 Execute o cliente em um terminal separado. Ele vai solicitar qual serviço você deseja chamar e os parâmetros necessários.
 
-python -m client.rpc_client
+``` python -m client.rpc_client ```
 
 O cliente irá listar os serviços disponíveis: "soma", "media", "busca" e "conversao"
 
