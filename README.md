@@ -24,6 +24,7 @@ pip install -r requeriments.txt
 
 ## Estrutura do Projeto
 
+```
 sistemas-distribuidos-rpc/
 ├── client/
 │   └── __init__.py
@@ -39,6 +40,7 @@ sistemas-distribuidos-rpc/
 │    └── service_soma.py
 ├── .gitignore
 └── requeriments.txt
+```
 
 ## Como Executar
 
