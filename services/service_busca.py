@@ -12,9 +12,9 @@ FAKE_DB = {
 }
 
 def process(payload):
-    term = payload.get("term","").lower()
+    term = payload.get("termo","").lower()
     time.sleep(1)
-    return {"matches": FAKE_DB.get(term, [])}
+    return {"itens encontrados": FAKE_DB.get(term, [])}
 
 def main():
     conn = get_connection()
@@ -23,9 +23,8 @@ def main():
 
     def on_request(ch, method, props, body):
         try:
-            msg = json.loads(body)
-            payload = msg.get("payload", {})
-            client_corr_id = msg.get("client_corr_id") or props.correlation_id
+            payload = json.loads(body)
+            client_corr_id = props.correlation_id
         except Exception as e:
             print("Formato inválido:", e)
             return

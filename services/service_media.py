@@ -6,12 +6,12 @@ import pika
 QUEUE = 'service_media'
 
 def process(payload):
-    nums = payload.get("numbers", [])
+    nums = payload.get("números", [])
     if not nums:
-        return {"error": "no numbers provided"}
+        return {"error": "nenhum número recebido"}
     time.sleep(2)
-    avg = sum(nums) / len(nums)
-    return {"result": avg, "count": len(nums)}
+    media = sum(nums) / len(nums)
+    return {"soma:": sum(nums), "quantidade de números recebidos": len(nums), "resultado": media}
 
 def main():
     conn = get_connection()
@@ -20,9 +20,8 @@ def main():
 
     def on_request(ch, method, props, body):
         try:
-            msg = json.loads(body)
-            payload = msg.get("payload", {})
-            client_corr_id = msg.get("client_corr_id") or props.correlation_id
+            payload = json.loads(body)
+            client_corr_id = props.correlation_id
         except Exception as e:
             print("Formato inválido:", e)
             return

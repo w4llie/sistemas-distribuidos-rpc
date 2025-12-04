@@ -3,13 +3,13 @@ import time
 import pika
 from common.rpc_utils import get_connection
 
-QUEUE = 'service_soma'
+QUEUE = 'service_conversao'
 
 def process(payload):
-    a = payload.get("a", 0)
-    b = payload.get("b", 0)
-    time.sleep(1)
-    return {"resultado": a + b}
+    celsius = payload.get("celsius", 0.0)
+    fahrenheit = celsius * 1.8 + 32
+    time.sleep(0.1)
+    return {"resultado em fahrenheit": fahrenheit}
 
 def main():
     conn = get_connection()
@@ -24,13 +24,13 @@ def main():
             print("Formato inválido:", e)
             return
 
-        print(f"[service_soma] Recebido corr_id={client_corr_id} payload={payload}")
+        print(f"[{QUEUE}] Recebido corr_id={client_corr_id} payload={payload}")
         result = process(payload)
         response_body = json.dumps(result)
 
         reply_to = props.reply_to
         if reply_to is None:
-            print(f"[service_soma] Nenhum reply_to fornecido, não posso responder corr_id={client_corr_id}")
+            print(f"[{QUEUE}] Nenhum reply_to fornecido, não posso responder corr_id={client_corr_id}")
             return
 
         ch.basic_publish(
@@ -42,10 +42,10 @@ def main():
             ),
             body=response_body
         )
-        print(f"[service_soma] Respondido corr_id={client_corr_id}")
+        print(f"[{QUEUE}] Respondido corr_id={client_corr_id}")
 
     ch.basic_consume(queue=QUEUE, on_message_callback=on_request, auto_ack=True)
-    print(f"[service_soma] Aguardando mensagens na fila '{QUEUE}'...")
+    print(f"[{QUEUE}] Aguardando mensagens na fila '{QUEUE}'...")
     ch.start_consuming()
 
 if __name__ == "__main__":

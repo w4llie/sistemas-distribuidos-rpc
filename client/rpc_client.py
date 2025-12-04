@@ -9,8 +9,6 @@ class RpcClient:
         self.connection = get_connection()
         self.channel = self.connection.channel()
 
-        self.coordinator_queue = 'rpc_coordinator'
-
         result = self.channel.queue_declare(queue='', exclusive=True)
         self.callback_queue = result.method.queue
 
@@ -36,22 +34,20 @@ class RpcClient:
             self.response = body
 
     def call(self, service_name: str, payload: dict, timeout: float = 10.0):
+        service_queue = f"service_{service_name}"
         self.response = None
         self.corr_id = str(uuid.uuid4())
-        message = {
-            "service": service_name,
-            "payload": payload
-        }
+        message = {"payload": payload}
 
         self.channel.basic_publish(
             exchange='',
-            routing_key=self.coordinator_queue,
+            routing_key=service_queue,
             properties=pika.BasicProperties(
                 reply_to=self.callback_queue,
                 correlation_id=self.corr_id,
                 content_type='application/json',
             ),
-            body=json.dumps(message)
+            body=json.dumps(payload)
         )
 
         import time
@@ -71,7 +67,7 @@ if __name__ == "__main__":
 
     cli = RpcClient()
 
-    print("Escolha o serviço: soma, media, busca")
+    print("Escolha o serviço: soma, media, busca, conversao")
     service = input("Serviço: ").strip()
 
     if service == "soma":
@@ -80,14 +76,17 @@ if __name__ == "__main__":
         payload = {"a": a, "b": b}
     elif service == "media":
         nums = input("Números separados por espaço: ")
-        payload = {"numbers": [float(x) for x in nums.split()]}
+        payload = {"números": [float(x) for x in nums.split()]}
     elif service == "busca":
-        key = input("Termo de busca (string): ")
-        payload = {"term": key}
+        key = input("Termo de busca: ")
+        payload = {"termo": key}
+    elif service == "conversao":
+        celsius = float(input("Temperatura em Celsius: "))
+        payload = {"celsius": celsius}
     else:
-        print("Serviço desconhecido")
+        print("Este serviço não existe")
         sys.exit(1)
 
     print(f"Chamando serviço '{service}' com payload: {payload}")
     resp = cli.call(service, payload)
-    print("Resposta:", resp)
+    print("Resultado:", resp)
